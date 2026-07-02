@@ -36,5 +36,12 @@ Ce dépôt contient une application SPA statique pour préparer un alignement de
 ## Risques connus
 
 - Les sorties PowerShell peuvent afficher du mojibake même quand les fichiers sont bien encodés. Vérifier les fichiers en UTF-8 avant de corriger des accents.
-- Il y a une base de tests navigateur dans `tests/rules.html`, mais pas encore de suite automatisée complète.
+- La suite automatisée comprend des tests Node et des parcours Playwright sur Chromium bureau et mobile. Les anciennes pages HTML restent utiles pour le diagnostic manuel.
 - Les fonctionnalités presse-papiers, fenêtre d'impression et téléchargement dépendent du navigateur.
+
+## Exécution des tests
+
+- François exécute localement les tests lors des changements afin de limiter l'usage des agents.
+- Un agent peut ajouter ou modifier des tests, vérifier leur syntaxe et indiquer précisément les commandes à lancer, mais ne doit pas exécuter la suite localement sauf demande explicite de François.
+- Quand l'agent n'a pas exécuté les tests, il doit le signaler clairement dans son compte rendu sans affirmer qu'ils passent.
+- La CI GitHub demeure la validation automatique lors des push et pull requests.

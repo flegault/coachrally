@@ -30,6 +30,31 @@ async function storedState(page) {
   return page.evaluate(() => JSON.parse(localStorage.getItem('rallye_cap_qc_v5')));
 }
 
+async function mockFirebase(page, publicPayload = null) {
+  await page.addInitScript(payload => { window.__TEST_PUBLIC_PAYLOAD__ = payload; }, publicPayload);
+  await page.route('**/firebase-sync.js', route => route.fulfill({
+    contentType: 'text/javascript',
+    body: `
+      export async function onAuth(callback) { await callback({ uid: 'test-coach' }); return () => {}; }
+      export async function listTeams() { return []; }
+      export async function listMatches() { return []; }
+      export async function listPublicTeams() { return []; }
+      export async function listenTeam() { return () => {}; }
+      export async function listenMatch() { return () => {}; }
+      export async function listenPublic(id, callback) { await callback({ payload: window.__TEST_PUBLIC_PAYLOAD__ }); return () => {}; }
+      export async function listenPublicTeam(id, callback) { await callback({ payload: window.__TEST_PUBLIC_PAYLOAD__ }); return () => {}; }
+      export async function publishPublic(id, matchId, payload) { window.__PUBLISHED_PAYLOAD__ = payload; return id || 'match-public-test'; }
+      export async function saveMatch(id) { return id || 'match-cloud-test'; }
+      export async function publishPublicTeam(id) { return id || 'team-public-test'; }
+      export async function saveTeam(id) { return id; }
+      export async function deletePublic() {}
+      export async function deletePublicTeam() {}
+      export async function deleteMatch() {}
+      export async function deleteTeam() {}
+    `
+  }));
+}
+
 test('charge l’accueil en UTF-8 sans erreur et conserve les données', async ({ page }) => {
   const errors = [];
   page.on('pageerror', error => errors.push(error.message));
@@ -295,6 +320,41 @@ test('télécharge le Programme avec un nom de fichier stable', async ({ page })
   const download = await downloadPromise;
   expect(download.suggestedFilename()).toBe('2026-07-04_expos-de-montreal_aigles-de-quebec.png');
   expect(await download.failure()).toBeNull();
+});
+
+test('masque l’alignement dans une projection publique non prête', async ({ page }) => {
+  const payload = {
+    team: 'Étoiles de Québec', opp: 'Aigles de Montréal', ready: false, started: false,
+    currentIndex: 0, publicStage: 'programme', phases: [], programme: { players: [] }
+  };
+  await mockFirebase(page, payload);
+  await page.goto('/#public/match-public-test');
+  await expect(page.getByRole('heading', { name: 'Étoiles de Québec vs Aigles de Montréal' })).toBeVisible();
+  await expect(page.locator('#matchCard')).toContainText('Alignement à venir');
+  await expect(page.locator('[data-public-player]')).toHaveCount(0);
+});
+
+test('rend une projection spectateur et conserve les favoris localement', async ({ page }) => {
+  const players = [
+    { playerId: 'p1', rank: 1, name: 'Émile Tremblay', number: '27' },
+    { playerId: 'p2', rank: 2, name: 'Zoé Gagnon', number: '8' }
+  ];
+  const payload = {
+    team: 'Étoiles de Québec', opp: 'Aigles de Montréal', date: '2026-07-04', time: '10:30', place: 'Parc central',
+    teamPublicId: 'etoiles-quebec', ready: true, started: false, currentIndex: 0, publicStage: 'ready',
+    phases: [{ inning: 0, half: 'debut', label: 'Début de 1re', type: 'attaque', locked: false }],
+    programme: { players }, battingOrder: players, batters: { 0: players }, defense: { 0: [] }
+  };
+  await mockFirebase(page, payload);
+  await page.goto('/#public/match-public-test');
+  await expect(page.getByRole('heading', { name: 'Étoiles de Québec vs Aigles de Montréal' })).toBeVisible();
+  await expect(page.locator('#matchCard')).toContainText('Samedi 4 juillet 2026');
+  const favorite = page.getByRole('button', { name: /Émile Tremblay/ });
+  await favorite.click();
+  await expect(favorite).toHaveClass(/favorite/);
+  expect(await page.evaluate(() => localStorage.getItem('rallye_cap_public_favorite_players:etoiles-quebec'))).toBe('["p1"]');
+  await page.reload();
+  await expect(page.getByRole('button', { name: /Émile Tremblay/ })).toHaveClass(/favorite/);
 });
 
 test('la navigation mobile garde le workflow utilisable', async ({ page }, testInfo) => {
