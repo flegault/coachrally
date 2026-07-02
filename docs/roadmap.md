@@ -11,7 +11,7 @@
 - Compléter la gestion multi-match restante: actions avancées de reprise/recommencement à partir d'un match archivé.
 - Améliorer les exports et partages: PDF parents responsive.
 - Extraire la logique métier de `app.js` dans des modules testables.
-- Livré: les règles, la vue Banc et la synchronisation d'équipe ont des tests Node; Playwright couvre les parcours front critiques, les invariants de génération, les changements de joueurs et la fin avec archivage dans Chromium bureau et mobile. Il reste à étendre les tests aux exports et aux projections publiques.
+- Livré: les règles, la vue Banc et la synchronisation d'équipe ont des tests Node; Playwright couvre les parcours front critiques, les invariants de génération, les changements de joueurs, la fin avec archivage et les trois exports dans Chromium bureau et mobile. Il reste à étendre les tests aux projections publiques.
 
 ## Priorité Spectateurs / Cloud
 
@@ -442,7 +442,7 @@ Questions fermées:
 
 ## Bugs et dettes connues
 
-- La couverture CLI comprend maintenant les modules purs existants, les invariants de génération, les cas limites principaux de changements de joueurs et la fin de match. Les exports et les projections publiques demandent encore une couverture automatisée plus complète.
+- La couverture CLI comprend maintenant les modules purs existants, les invariants de génération, les cas limites principaux de changements de joueurs, la fin de match et les contrats visibles des exports. Les projections publiques demandent encore une couverture automatisée plus complète.
 - Les exports peuvent diverger de l'affichage principal parce qu'ils reconstruisent leur propre HTML.
 - Livré: le champ de mot de passe de `Spectateurs en direct` utilise maintenant un champ texte avec `autocomplete="off"` et des noms d'inputs dédiés afin de réduire les propositions de sauvegarde du gestionnaire de mots de passe Chrome.
 - À surveiller: Chrome peut encore proposer de sauvegarder le code si le navigateur détecte malgré tout un flux d'authentification; dans ce cas, il faudra remplacer le champ par un contrôle encore plus personnalisé.

@@ -251,6 +251,52 @@ test('archive un match terminé et conserve l’équipe pour le suivant', async 
   await expect(page.getByRole('button', { name: 'Préparer un match' })).toBeVisible();
 });
 
+test('génère un export Texte complet et modifiable', async ({ page }) => {
+  await createExampleMatch(page);
+  await page.locator('#shareStepBtn').click();
+  await page.getByRole('button', { name: /^Texte/ }).click();
+  const preview = page.locator('#textPreview');
+  await expect(preview).toHaveValue(/Expos de Montréal \(VIS\)/);
+  await expect(preview).toHaveValue(/vs Aigles de Québec \(LOC\)/);
+  await expect(preview).toHaveValue(/DÉBUT DE 1RE - ATTAQUE/);
+  await expect(preview).toHaveValue(/FIN DE 1RE - DEFENSE/);
+  await expect(preview).toHaveValue(/Marquis Grissom/);
+  await expect(preview).toHaveValue(/⚾ CoachRally • coachrally\.app/);
+  await expect(preview).toHaveValue(/https:\/\/coachrally\.app\//);
+  await preview.fill('Correction manuelle avant impression');
+  await expect(preview).toHaveValue('Correction manuelle avant impression');
+  expect((await storedMatch(page)).opp).toBe('Aigles de Québec');
+});
+
+test('ouvre un export Banc cohérent avec le match', async ({ page }) => {
+  await createExampleMatch(page);
+  await page.locator('#shareStepBtn').click();
+  const popupPromise = page.waitForEvent('popup');
+  await page.locator('#modalActions').getByRole('button', { name: /^Banc/ }).click();
+  const popup = await popupPromise;
+  await popup.waitForLoadState('domcontentloaded');
+  await expect(popup.getByRole('heading', { name: 'Expos de Montréal vs Aigles de Québec' })).toBeVisible();
+  await expect(popup.getByRole('columnheader', { name: 'Manche 1' })).toBeVisible();
+  await expect(popup.getByRole('cell', { name: /Marquis Grissom/ }).first()).toBeVisible();
+  await expect(popup.locator('body')).toContainText('CoachRally');
+  await expect(popup.locator('body')).toContainText('coachrally.app');
+  await popup.close();
+});
+
+test('télécharge le Programme avec un nom de fichier stable', async ({ page }) => {
+  await createExampleMatch(page);
+  await page.locator('#date').evaluate((element) => {
+    element.value = '2026-07-04';
+    element.dispatchEvent(new Event('input', { bubbles: true }));
+  });
+  await page.locator('#shareStepBtn').click();
+  const downloadPromise = page.waitForEvent('download');
+  await page.locator('#modalActions').getByRole('button', { name: /^Programme/ }).click();
+  const download = await downloadPromise;
+  expect(download.suggestedFilename()).toBe('2026-07-04_expos-de-montreal_aigles-de-quebec.png');
+  expect(await download.failure()).toBeNull();
+});
+
 test('la navigation mobile garde le workflow utilisable', async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== 'mobile-chromium');
   await page.goto('/#accueil');
