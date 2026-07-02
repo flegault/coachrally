@@ -240,8 +240,9 @@ Découpage actuel:
 
 - `index.html`: structure HTML et points de montage;
 - `styles.css`: styles de l'application;
-- `app.js`: état, moteur d'alignement, rendu, exports et interactions.
+- `app.js`: orchestration de l'état, progression, changements de joueurs, rendu, exports et interactions;
 - `rules.js`: validations pures des règles obligatoires, nettoyage des positions, résumé des violations d'horaire, statistiques/équité et garde-fous métier simples comme la validation de démarrage. `startReadiness()` refuse aussi un horaire vide pour éviter de débuter un match sans alignement réel;
+- `lineup-engine.js`: génération pure et déterministe de l'horaire défensif à partir des joueurs, manches et frappeurs; expose `generateSchedule()` et `generateInning()` sans dépendre du DOM ni du stockage;
 - `tests/rules.html`: tests navigateur simples pour les règles obligatoires.
 
 Découpage recommandé:

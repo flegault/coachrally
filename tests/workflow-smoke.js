@@ -11,6 +11,7 @@ assert.strictEqual(new Set(ids).size, ids.length, 'Les IDs HTML doivent être un
 assert.match(html, /href="#jouer" data-step="jouer"/);
 assert.match(html, /id="readyToPlayBtn"/);
 assert.match(html, /id="startMatchBtn"/);
+assert.match(html, /<script src="lineup-engine\.js"><\/script>/);
 assert.match(html, /id="timeHour"/);
 assert.match(html, /id="timeMinute"/);
 assert.doesNotMatch(html, /id="publishFromPlayBtn"|id="backToAlignBtn"|id="coachMatchMeta"/);

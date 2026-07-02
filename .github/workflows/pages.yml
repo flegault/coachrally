@@ -44,7 +44,7 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p dist
-          cp index.html app.js bench-view.js team-sync.js rules.js firebase-sync.js styles.css favicon.ico CNAME dist/
+          cp index.html app.js lineup-engine.js bench-view.js team-sync.js rules.js firebase-sync.js styles.css favicon.ico CNAME dist/
           mkdir -p dist/vendor
           cp vendor/qrcode.js dist/vendor/
           node -e '

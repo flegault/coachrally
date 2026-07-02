@@ -11,7 +11,7 @@
 <script>
 const players=Array.from({length:8},(_,i)=>({playerId:'p'+(i+1),name:'Joueur '+(i+1),number:String(i+1)}));
 const defense=['L1','L2','AC','1B','2B','3B'].map((pos,i)=>({playerId:'p'+(i+1),name:'Joueur '+(i+1),number:String(i+1),pos:pos+(pos[0]==='L'?' 🧢':'')}));
-const batters=players.slice(1).map((p,i)=>({...p,rank:i+1}));
+const batters=players.slice(1,7).map((p,i)=>({...p,rank:i+1}));
 const playing={team:'Équipe',opp:'Adversaire',started:true,currentIndex:0,phases:[{inning:0,type:'defense',label:'Début 1'},{inning:0,type:'attaque',label:'Fin 1'}],programme:{players},defense:{0:defense},batters:{0:batters}};
 const tests=[
   ['attente avant le début',()=>RallyeCapBench.buildModel({started:false}).status==='waiting'],
