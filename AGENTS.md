@@ -41,7 +41,7 @@ Ce dépôt contient une application SPA statique pour préparer un alignement de
 
 ## Exécution des tests
 
-- François exécute localement les tests lors des changements afin de limiter l'usage des agents.
-- Un agent peut ajouter ou modifier des tests, vérifier leur syntaxe et indiquer précisément les commandes à lancer, mais ne doit pas exécuter la suite localement sauf demande explicite de François.
+- L'utilisateur exécute localement les tests lors des changements afin de limiter l'usage des agents.
+- Un agent peut ajouter ou modifier des tests, vérifier leur syntaxe et indiquer précisément les commandes à lancer, mais ne doit pas exécuter la suite localement sauf demande explicite de l'utilisateur.
 - Quand l'agent n'a pas exécuté les tests, il doit le signaler clairement dans son compte rendu sans affirmer qu'ils passent.
 - La CI GitHub demeure la validation automatique lors des push et pull requests.
