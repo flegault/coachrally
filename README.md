@@ -166,17 +166,75 @@ Ne jamais ajouter de debug token dans les secrets GitHub ou dans un fichier publ
 Installer les dépendances de développement et Chromium une première fois:
 
 ```powershell
-npm install
-npx playwright install chromium
+npm.cmd install
+npx.cmd playwright install chromium
 ```
 
 Exécuter toute la suite, les tests métier seuls ou les parcours navigateur:
 
 ```powershell
-npm test
-npm run test:unit
-npm run test:e2e
+# Toute la suite
+npm.cmd test
+
+# Tests Node seulement
+npm.cmd run test:unit
+
+# Tests Playwright seulement
+npm.cmd run test:e2e
 ```
+
+Pour cibler ou observer un parcours Playwright:
+
+```powershell
+# Filtrer les tests par leur titre
+npx.cmd playwright test --grep "projection spectateur"
+
+# Afficher le navigateur pendant l'exécution
+npx.cmd playwright test --headed
+
+# Ouvrir l'interface interactive Playwright
+npx.cmd playwright test --ui
+```
+
+Lors d'un échec, Playwright place les diagnostics dans `test-results/`: trace, capture d'écran et vidéo. Ouvrir une trace avec:
+
+```powershell
+npx.cmd playwright show-trace test-results\chemin-vers-la-trace\trace.zip
+```
+
+Les commandes utilisent explicitement les exécutables `.cmd`, parce que certaines configurations PowerShell de Windows bloquent les scripts `npm.ps1` et `npx.ps1`.
+
+### Couverture actuelle
+
+Les tests Node couvrent 11 scénarios répartis entre:
+
+- validations obligatoires de l'alignement;
+- positions inconnues ou dupliquées;
+- répétitions interdites au premier but, au banc et comme lanceur;
+- nettoyage des assignations;
+- statistiques et équité;
+- validation du démarrage;
+- états de la vue Banc;
+- choix de version et regroupement des matchs synchronisés.
+
+Playwright contient 17 scénarios utilisateur:
+
+- chargement, UTF-8 et persistance locale;
+- création d'équipe et ajout de joueurs;
+- préparation, démarrage et progression d'un match;
+- invariants de génération de l'alignement;
+- ajout, remplacement et retrait en match commencé;
+- limites de 6 et 12 joueurs actifs;
+- changement appliqué à une demi-manche future;
+- fin, archivage et conservation de l'équipe;
+- exports `Texte`, `Banc` et `Programme`;
+- projection publique non prête;
+- projection spectateur prête et favoris locaux;
+- navigation mobile du workflow.
+
+Dans la sortie Playwright, un même scénario apparaît généralement deux fois: une fois dans le projet `chromium` de bureau et une fois dans `mobile-chromium`. Les 16 scénarios communs produisent donc 32 exécutions. Le scénario de navigation mobile est ignoré sur le projet bureau et exécuté sur mobile, ce qui donne 33 réussites et 1 skip attendu pour 17 scénarios distincts.
+
+Dans `npx.cmd playwright test --ui`, la colonne de gauche regroupe les tests par projet. Déplier `chromium` ou `mobile-chromium` permet de voir les scénarios correspondants; activer les deux projets affiche volontairement les doublons bureau/mobile.
 
 Les pages `tests/rules.html`, `tests/bench.html` et `tests/team-sync.html` restent disponibles pour le diagnostic manuel. Playwright sert directement l'application statique et n'ajoute aucune dépendance à la version déployée.
 
