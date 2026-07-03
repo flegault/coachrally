@@ -218,7 +218,7 @@ Les tests Node couvrent 11 scénarios répartis entre:
 - états de la vue Banc;
 - choix de version et regroupement des matchs synchronisés.
 
-Playwright contient 17 scénarios utilisateur:
+Playwright contient 19 scénarios utilisateur:
 
 - chargement, UTF-8 et persistance locale;
 - création d'équipe et ajout de joueurs;
@@ -231,9 +231,10 @@ Playwright contient 17 scénarios utilisateur:
 - exports `Texte`, `Banc` et `Programme`;
 - projection publique non prête;
 - projection spectateur prête et favoris locaux;
+- aperçu local de la route Banc, avec et sans match actif;
 - navigation mobile du workflow.
 
-Dans la sortie Playwright, un même scénario apparaît généralement deux fois: une fois dans le projet `chromium` de bureau et une fois dans `mobile-chromium`. Les 16 scénarios communs produisent donc 32 exécutions. Le scénario de navigation mobile est ignoré sur le projet bureau et exécuté sur mobile, ce qui donne 33 réussites et 1 skip attendu pour 17 scénarios distincts.
+Dans la sortie Playwright, un même scénario apparaît généralement deux fois: une fois dans le projet `chromium` de bureau et une fois dans `mobile-chromium`. Les 18 scénarios communs produisent donc 36 exécutions. Le scénario de navigation mobile est ignoré sur le projet bureau et exécuté sur mobile, ce qui donne 37 réussites et 1 skip attendu pour 19 scénarios distincts.
 
 Dans `npx.cmd playwright test --ui`, la colonne de gauche regroupe les tests par projet. Déplier `chromium` ou `mobile-chromium` permet de voir les scénarios correspondants; activer les deux projets affiche volontairement les doublons bureau/mobile.
 

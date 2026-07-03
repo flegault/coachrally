@@ -12,6 +12,7 @@
 - Améliorer les exports et partages: PDF parents responsive.
 - En cours: le moteur de génération est extrait dans `lineup-engine.js`; poursuivre avec la progression, les changements de joueurs, les projections publiques et les exports.
 - Livré: les règles, la vue Banc et la synchronisation d'équipe ont des tests Node; Playwright couvre les parcours front critiques, les invariants de génération, les changements de joueurs, la fin avec archivage, les trois exports et les projections publiques dans Chromium bureau et mobile.
+- Livré: `#banc/local` permet de prévisualiser la vue Banc des jeunes à partir du match courant sans publication ni Firebase.
 
 ## Priorité Spectateurs / Cloud
 

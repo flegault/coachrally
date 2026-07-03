@@ -15,6 +15,8 @@ L'application est une SPA avec les vues applicatives principales suivantes acces
 - `#a-propos` pour présenter CoachRally et joindre François par courriel
 - `#public/{publicId}` pour le spectateur live public en lecture seule
 - `#banc/{publicId}` pour la tablette du banc en lecture seule et sans navigation
+- `#banc/local` pour prévisualiser localement la tablette du banc à partir du match courant, sans publication
+- La vue Banc est optimisée d'abord pour une tablette en paysage visible par plusieurs joueurs à distance; la demi-manche courante domine la composition et l'aperçu suivant reste secondaire. En défense, les joueurs actifs sont présentés avec leur nom en haut à gauche et leur position en bas à droite. Les numéros de chandail et les joueurs au banc sont masqués pour maximiser l'espace; l'icône de phase demeure dans le titre plutôt que dans chaque fiche, sauf le casque des lanceurs.
 - `#fans/{teamPublicId}` pour la liste publique permanente des matchs publiés d'une équipe
 
 La navigation est disponible dans:

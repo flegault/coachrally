@@ -357,6 +357,23 @@ test('rend une projection spectateur et conserve les favoris localement', async 
   await expect(page.getByRole('button', { name: /Émile Tremblay/ })).toHaveClass(/favorite/);
 });
 
+test('explique que l’aperçu Banc local exige un match actif', async ({ page }) => {
+  await page.goto('/#banc/local');
+  await expect(page.getByRole('heading', { name: 'Aucun match actif' })).toBeVisible();
+  await expect(page.locator('#youngBench')).toContainText('Prépare ou ouvre un match');
+});
+
+test('affiche le Banc local depuis le match courant sans Firebase', async ({ page }) => {
+  await startExampleMatch(page);
+  await page.goto('/#banc/local');
+  await expect(page.locator('.benchHeader')).toContainText('Expos de Montréal');
+  await expect(page.locator('.benchHeader small')).toHaveAttribute('aria-label', 'Aperçu local');
+  await expect(page.getByRole('heading', { name: 'Maintenant' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Ensuite' })).toBeVisible();
+  await expect(page.locator('#youngBench')).toContainText('Début de 1re');
+  await expect(page.locator('#youngBench')).toContainText('Fin de 1re');
+});
+
 test('la navigation mobile garde le workflow utilisable', async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== 'mobile-chromium');
   await page.goto('/#accueil');
