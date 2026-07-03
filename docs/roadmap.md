@@ -10,7 +10,7 @@
 
 - Compléter la gestion multi-match restante: actions avancées de reprise/recommencement à partir d'un match archivé.
 - Améliorer les exports et partages: PDF parents responsive.
-- Extraire la logique métier de `app.js` dans des modules testables.
+- En cours: le moteur de génération est extrait dans `lineup-engine.js`; poursuivre avec la progression, les changements de joueurs, les projections publiques et les exports.
 - Livré: les règles, la vue Banc et la synchronisation d'équipe ont des tests Node; Playwright couvre les parcours front critiques, les invariants de génération, les changements de joueurs, la fin avec archivage, les trois exports et les projections publiques dans Chromium bureau et mobile.
 
 ## Priorité Spectateurs / Cloud

@@ -44,6 +44,7 @@ index.html                  Structure HTML de l'application
 styles.css                  Styles
 app.js                      Logique applicative principale
 rules.js                    Validations pures des règles obligatoires
+lineup-engine.js            Génération pure des positions défensives
 firebase-sync.js            Synchronisation Firebase optionnelle
 firebase-config.example.js  Exemple de configuration Firebase
 firestore.rules             Règles Firestore

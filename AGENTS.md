@@ -23,7 +23,7 @@ Ce dépôt contient une application SPA statique pour préparer un alignement de
 - Tant que l'application n'est pas en production, ne pas supporter les vieux modèles de données. Aucune logique de code ne doit exister seulement pour migrer, lire ou réparer une ancienne version de stockage local ou cloud.
 - Les vues principales sont: `Accueil`, `Matchs`, `Match`, `Joueurs`, `Alignement`, `Jouer` et les routes publiques `Spectateurs`, `Banc` et `Fans`.
 - `Alignement` prépare et valide l'horaire avec `Prêt à jouer`. `Jouer` porte le démarrage, la progression et les changements de joueurs, en vue complète ou simple.
-- Le moteur d'alignement, les validations, le rendu et les exports sont encore regroupés dans `app.js`.
+- Le moteur de génération vit dans `lineup-engine.js` et les validations pures dans `rules.js`; l'état, la progression, les changements de joueurs, le rendu et les exports restent regroupés dans `app.js`.
 
 ## Priorités de maintenance
 
