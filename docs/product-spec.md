@@ -78,6 +78,8 @@ Observations UX à explorer:
 - Les positions défensives sont `1B`, `2B`, `3B`, `AC`, `L1`, `L2`; les autres joueurs sont au banc.
 - En mode frappe fixe, il y a 6 frappeurs par manche et l'ordre continue à la manche suivante.
 - La frappe fixe est normalement activée en Rallye-Cap; l'interface doit l'indiquer clairement dans l'étape `Match`, avec les autres paramètres du match courant.
+- L'option `Faire varier le premier frappeur`, activée par défaut avec la frappe fixe, décale le départ d'une position par manche lorsqu'il y a exactement 6 joueurs. Elle est verrouillée au début du match.
+- En cours de match, un joueur ajouté frappe en premier à la prochaine manche offensive; plusieurs ajouts gardent leur ordre d'ajout. La rotation reprend ensuite au frappeur attendu, sans doublon parmi les 6 frappeurs. Un joueur retiré est sauté et les demi-manches déjà barrées conservent leur ordre.
 - Quand la frappe fixe est désactivée, l'application garde l'ordre général des frappeurs, mais ne doit pas afficher de frappeurs par manche, de nombre de présences au bâton prévu, ni de rang `(#)` dans les cases du tableau. Ces informations dépendent alors des retraits réels pendant le match.
 
 ## Règles obligatoires de défensive
@@ -101,6 +103,7 @@ Ces objectifs améliorent la qualité de l'alignement, mais ils ne doivent pas m
 - Répartir le temps de jeu le plus équitablement possible.
 - Répartir les présences défensives le plus équitablement possible.
 - Répartir les présences au bâton le plus équitablement possible en mode frappe fixe.
+- Lorsqu'une règle défensive est mathématiquement impossible, comme un premier but unique sur plus de manches que de joueurs, l'interface l'affiche comme information non bloquante plutôt que comme erreur à confirmer. Les avertissements corrigeables sont présentés en liste avant le démarrage, avec la question de confirmation séparée.
 - Les cartes d'équité sont harmonisées entre les modes: `Temps de jeu`, `Variété des positions` et `Indice global`. En mode frappe fixe, la carte `Présences au bâton` est ajoutée.
 - `Temps de jeu` inclut les présences au bâton et la défensive quand la frappe fixe est activée. Quand la frappe fixe est désactivée, `Temps de jeu` inclut seulement la défensive, parce que les présences au bâton dépendent des retraits réels.
 - Quand la frappe fixe est désactivée, les présences au bâton ne doivent pas influencer les scores d'équité. Les statistiques n'affichent alors pas les colonnes `AB` ni `Total`.
@@ -188,7 +191,7 @@ Les corrections automatiques encore applicables sont aussi présentées dans une
 - Une fois qu'une demi-manche est jouée, aucun changement futur ne peut être appliqué dans une demi-manche précédente.
 - `Enlever`: si plus de 6 joueurs sont actifs, le joueur est retiré des demi-manches futures. Son historique demeure visible.
 - `Remplacer`: le nouveau joueur peut être un joueur inactif existant ou un nouveau nom. L'historique du joueur remplacé demeure, une nouvelle ligne est ajoutée sous lui, et le nouveau joueur reprend ses assignations futures.
-- `Ajouter`: si moins de 12 joueurs sont actifs, le nouveau joueur est ajouté directement au match en cours. Il est placé en bas de la liste, devient dernier frappeur et ne reçoit aucune assignation défensive automatique. Le remplacement d'un joueur doit passer par l'action séparée `Remplacer`.
+- `Ajouter`: si moins de 12 joueurs sont actifs, le nouveau joueur est ajouté directement au match en cours. Il est placé en bas de la liste, ouvre la prochaine manche offensive en frappe fixe et ne reçoit aucune assignation défensive automatique. Le remplacement d'un joueur doit passer par l'action séparée `Remplacer`.
 - `Inactif`: le joueur est enregistré sans participer au match courant.
 - Le remplacement direct avant le début du match est retiré de l'étape `Joueurs`. Avant match, un changement de composition devrait passer par la présence/absence ou par la gestion hors workflow du bassin permanent.
 - Quand un joueur actif est retiré pendant un match débuté, les demi-manches passées ne sont pas modifiées. Les assignations futures du joueur sont retirées et l'entraîneur doit corriger manuellement.

@@ -102,10 +102,11 @@
         <label><span>Date</span><input id="date" type="date" /></label>
         <div class="timeFields"><label><span>Heure</span><select id="timeHour"></select></label><label><span>Minutes</span><select id="timeMinute"></select></label></div>
         <label><span>Endroit</span><input id="place" placeholder="ex. Parc, terrain" /></label>
+        <label><span>Manches</span><input id="innings" type="number" min="4" max="9" step="1" /></label>
       </div>
       <div class="matchOptionsGrid">
-        <label><span>Manches</span><input id="innings" type="number" min="4" max="9" step="1" /></label>
-        <div class="fixedField"><span>Frappe fixe</span><div class="switchLine matchSwitch"><label class="switch"><input id="fixed" type="checkbox"><span class="slider"></span></label><div class="tiny">Normalement activé en Rallye-Cap: 6 frappeurs par manche, puis on continue avec le prochain frappeur.</div></div></div>
+        <div class="fixedField"><span>Frappe fixe</span><div class="switchLine matchSwitch"><label class="switch"><input id="fixed" type="checkbox"><span class="slider"></span></label><div class="tiny">6 frappeurs par manche, puis on continue avec le prochain frappeur.</div></div></div>
+        <div class="fixedField dependentFixedField" id="rotateSixBattingField"><span>Faire varier le premier frappeur</span><div class="switchLine matchSwitch"><label class="switch"><input id="rotateSixBatting" type="checkbox"><span class="slider"></span></label><div class="tiny"><strong>Avec frappe fixe seulement.</strong> Décale l’ordre lorsqu’il y a exactement 6 joueurs.</div></div></div>
       </div>
       <label class="fanMessageField"><span>Message aux fans</span><textarea id="fanMessage" maxlength="300" placeholder="ex. Apportez vos sourires et vos casquettes!"></textarea><small class="hint">Affiché dans Spectateurs en direct et dans le Programme. Markdown simple: **gras**, *italique*, retours de ligne et listes avec "-".</small></label>
       <div class="fanMessagePreview hide" id="fanMessagePreview"></div>
@@ -192,9 +193,10 @@
     <div id="youngBench" class="youngBench"><div class="benchLoading"><span>⚾</span><strong>Préparation du banc…</strong></div></div>
   </section>
 </main>
-<div class="modalOverlay" id="modalOverlay"><div class="modal"><h3 id="modalTitle"></h3><p id="modalText"></p><div class="row" id="modalActions"></div></div></div>
+<div class="modalOverlay" id="modalOverlay"><div class="modal"><h3 id="modalTitle"></h3><div id="modalText"></div><div class="row" id="modalActions"></div></div></div>
 <script src="rules.js"></script>
 <script src="lineup-engine.js"></script>
+<script src="batting-order.js"></script>
 <script src="bench-view.js"></script>
 <script src="team-sync.js"></script>
 <script src="vendor/qrcode.js"></script>

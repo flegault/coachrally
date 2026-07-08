@@ -184,11 +184,26 @@ npm.cmd run test:unit
 npm.cmd run test:e2e
 ```
 
+Par défaut, la configuration Playwright utilise un seul worker afin de privilégier une exécution reproductible. Pour accélérer ponctuellement les parcours navigateur, ils peuvent être distribués entre plusieurs workers sans modifier la configuration:
+
+```powershell
+# Exécution parallèle recommandée sur une machine locale
+npx.cmd playwright test --fully-parallel --workers=4
+
+# Surcharge plus agressive pour une machine qui dispose de suffisamment de ressources
+npx.cmd playwright test --fully-parallel --workers=6
+```
+
+Quatre workers offrent généralement le meilleur équilibre entre vitesse, consommation de ressources et stabilité. Six workers peuvent réduire encore légèrement la durée, mais sollicitent davantage le processeur et la mémoire. Si des tests deviennent intermittents, revenir à quatre workers, puis confirmer le comportement avec l'exécution séquentielle `npm.cmd run test:e2e`.
+
 Pour cibler ou observer un parcours Playwright:
 
 ```powershell
 # Filtrer les tests par leur titre
 npx.cmd playwright test --grep "projection spectateur"
+
+# Filtrer un parcours et lui appliquer une surcharge de workers
+npx.cmd playwright test --grep "projection spectateur" --fully-parallel --workers=4
 
 # Afficher le navigateur pendant l'exécution
 npx.cmd playwright test --headed
