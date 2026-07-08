@@ -126,6 +126,19 @@ test('prépare, démarre et fait progresser un match', async ({ page }) => {
   await expect(page.locator('#topMatchStatus')).toContainText('En cours');
 });
 
+test('compte présents les joueurs sans champ on explicite', async ({ page }) => {
+  await createExampleMatch(page);
+  await page.evaluate(() => {
+    const state = JSON.parse(localStorage.getItem('rallye_cap_qc_v5'));
+    const match = state.matches.find(item => item.id === state.activeMatchId);
+    match.players.forEach(player => { delete player.on; });
+    localStorage.setItem('rallye_cap_qc_v5', JSON.stringify(state));
+  });
+  await page.goto('/#joueurs');
+  await expect(page.locator('#activeCountTag')).toContainText('10 présents');
+  await expect(page.locator('[data-toggle][aria-pressed="true"]')).toHaveCount(10);
+});
+
 test('génère un alignement qui respecte les invariants obligatoires', async ({ page }) => {
   await createExampleMatch(page);
   const match = await storedMatch(page);
