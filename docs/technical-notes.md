@@ -79,10 +79,14 @@ Champs principaux:
 - Équipe: `fanMessage` public de 300 caractères, inclus dans les payloads local, privé et `#fans`
 - `side`: `visiteur` ou `locale`
 - `fixed`: frappe fixe activée ou non
+- `rotateSixBatting`: décalage équitable du premier frappeur avec exactement 6 joueurs
+- `battingRotation`: curseur `nextId`, file `pending` des joueurs ajoutés prioritaires et `order` circulaire indépendant de l'ordre visuel
 - `innings`: nombre de manches
 - `players`: joueurs enregistrés
 - `order`: ordre des joueurs par identifiant
 - `battingOrders`: snapshots d'ordre au bâton par demie-manche offensive barrée, indexés sous la forme `inning:debut` ou `inning:fin`
+
+Le module pur `batting-order.js` construit les groupes de 6 à partir du curseur et de la file prioritaire. Une priorité consomme une place sans avancer artificiellement le curseur normal. À exactement 6 joueurs et sans priorité, le curseur avance d'une position par manche. Les snapshots offensifs contiennent les frappeurs réellement affichés et restent la source de vérité historique.
 - `schedule`: positions par manche
 - `started`: match explicitement débuté dans l'état actuel; à remplacer par une progression de demi-manche plus explicite
 - `locks.innings`: champ hérité du modèle de progression précédent; il ne doit plus guider de nouvelle logique. La source courante est `locks.halves`.

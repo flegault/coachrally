@@ -19,6 +19,23 @@ async function startExampleMatch(page) {
   await page.getByRole('button', { name: 'Confirmer' }).click();
 }
 
+async function createMatchWithPlayerCount(page, count) {
+  await createExampleMatch(page);
+  await page.locator('[data-step="joueurs"]').click();
+  const active = page.locator('[data-toggle][aria-pressed="true"]');
+  while (await active.count() > count) await active.last().click();
+  await page.locator('#toAlign').click();
+}
+
+async function startPreparedMatch(page) {
+  await page.goto('/#alignement');
+  await page.locator('#readyToPlayBtn').click();
+  const warning = page.getByRole('button', { name: 'Confirmer' });
+  if (await warning.isVisible()) await warning.click();
+  await page.locator('#startMatchBtn').click();
+  await page.getByRole('button', { name: 'Confirmer' }).click();
+}
+
 async function storedMatch(page) {
   return page.evaluate(() => {
     const state = JSON.parse(localStorage.getItem('rallye_cap_qc_v5'));
@@ -133,6 +150,158 @@ test('génère un alignement qui respecte les invariants obligatoires', async ({
     assignments.filter(([, position]) => position === '1B').forEach(([id]) => firstBaseCounts.set(id, (firstBaseCounts.get(id) || 0) + 1));
   }
   expect([...firstBaseCounts.values()].every(count => count <= 1)).toBe(true);
+});
+
+test('active par défaut la rotation à six joueurs et verrouille le toggle au début du match', async ({ page }) => {
+  await createMatchWithPlayerCount(page, 6);
+  await page.goto('/#match');
+  await expect(page.locator('#rotateSixBatting')).toBeChecked();
+  await expect(page.locator('#rotateSixBattingField')).not.toHaveClass(/inactive/);
+  await page.locator('#fixed').locator('..').click();
+  await expect(page.locator('#rotateSixBatting')).toBeDisabled();
+  await expect(page.locator('#rotateSixBattingField')).toHaveClass(/inactive/);
+  await page.locator('#fixed').locator('..').click();
+  await expect(page.locator('#rotateSixBatting')).toBeEnabled();
+
+  const layout = await page.evaluate(() => {
+    const place = document.querySelector('#place').closest('label').getBoundingClientRect();
+    const innings = document.querySelector('#innings').closest('label').getBoundingClientRect();
+    const fixed = document.querySelector('#fixed').closest('.fixedField').getBoundingClientRect();
+    const rotate = document.querySelector('#rotateSixBatting').closest('.fixedField').getBoundingClientRect();
+    const descriptions = [...document.querySelectorAll('.matchSwitch .tiny')];
+    return {
+      wide: innerWidth > 920,
+      placeTop: Math.round(place.top),
+      inningsTop: Math.round(innings.top),
+      fixedTop: Math.round(fixed.top),
+      rotateTop: Math.round(rotate.top),
+      descriptionsFit: descriptions.every(node => node.scrollWidth <= node.clientWidth + 1),
+      whiteSpaces: descriptions.map(node => getComputedStyle(node).whiteSpace)
+    };
+  });
+  expect(layout.descriptionsFit).toBe(true);
+  expect(layout.whiteSpaces.every(value => value === 'normal')).toBe(true);
+  if (layout.wide) {
+    expect(layout.inningsTop).toBe(layout.placeTop);
+    expect(layout.rotateTop).toBe(layout.fixedTop);
+  } else {
+    expect(layout.inningsTop).toBeGreaterThan(layout.placeTop);
+    expect(layout.rotateTop).toBeGreaterThan(layout.fixedTop);
+  }
+
+  await startPreparedMatch(page);
+  await page.goto('/#match');
+  await expect(page.locator('#rotateSixBatting')).toBeDisabled();
+  await page.goto('/#jouer');
+
+  await page.locator('#advanceHalfBtn').click();
+  await page.locator('#advanceHalfBtn').click();
+  await page.locator('#advanceHalfBtn').click();
+
+  const match = await storedMatch(page);
+  const first = match.battingOrders['0:debut'];
+  const second = match.battingOrders['1:debut'];
+  expect(first).toHaveLength(6);
+  expect(second).toEqual(first.slice(1).concat(first[0]));
+});
+
+test('présente les avertissements corrigeables en liste avec la question séparée', async ({ page }) => {
+  await createExampleMatch(page);
+  await page.evaluate(() => {
+    const state = JSON.parse(localStorage.getItem('rallye_cap_qc_v5'));
+    const match = state.matches.find(item => item.id === state.activeMatchId);
+    const firstBase0 = Object.keys(match.schedule[0].pos).find(id => match.schedule[0].pos[id] === '1B');
+    const firstBase1 = Object.keys(match.schedule[1].pos).find(id => match.schedule[1].pos[id] === '1B');
+    const oldPosition = match.schedule[1].pos[firstBase0];
+    match.schedule[1].pos[firstBase0] = '1B';
+    match.schedule[1].pos[firstBase1] = oldPosition;
+    localStorage.setItem('rallye_cap_qc_v5', JSON.stringify(state));
+  });
+  await page.reload();
+  await page.locator('#readyToPlayBtn').click();
+
+  await expect(page.locator('#modalTitle')).toHaveText('Avertissements à vérifier');
+  await expect(page.locator('#modalText li').first()).toHaveText('Un joueur joue 1B plus d’une fois.');
+  await expect(page.locator('#modalText > p')).toHaveText('Veux-tu tout de même commencer le match?');
+});
+
+test('ne bloque pas le départ pour une répétition au premier but mathématiquement nécessaire', async ({ page }) => {
+  await createMatchWithPlayerCount(page, 6);
+  await page.locator('[data-add-inning]').click();
+  await page.locator('[data-add-inning]').click();
+  await page.locator('[data-add-inning]').click();
+  await expect(page.locator('#validations')).toContainText('une répétition est nécessaire avec 7 manches et 6 joueurs');
+  await expect(page.locator('#validations')).not.toContainText('Un joueur joue 1B plus d’une fois.');
+  await page.locator('#readyToPlayBtn').click();
+  await expect(page).toHaveURL(/#jouer$/);
+  await expect(page.locator('#modalTitle')).not.toHaveText('Avertissements à vérifier');
+});
+
+test('conserve le même premier frappeur à six lorsque la rotation est désactivée', async ({ page }) => {
+  await createMatchWithPlayerCount(page, 6);
+  await page.goto('/#match');
+  await page.locator('#rotateSixBatting').locator('..').click();
+  await expect(page.locator('#rotateSixBatting')).not.toBeChecked();
+  await page.goto('/#alignement');
+  await startPreparedMatch(page);
+
+  await page.locator('#advanceHalfBtn').click();
+  await page.locator('#advanceHalfBtn').click();
+  await page.locator('#advanceHalfBtn').click();
+
+  const match = await storedMatch(page);
+  expect(match.battingOrders['1:debut']).toEqual(match.battingOrders['0:debut']);
+});
+
+test('priorise un septième joueur puis reprend la rotation attendue sans doublon', async ({ page }) => {
+  await createMatchWithPlayerCount(page, 6);
+  await startPreparedMatch(page);
+  await page.locator('#advanceHalfBtn').click();
+  await page.locator('#advanceHalfBtn').click();
+
+  const before = await storedMatch(page);
+  const expectedSecond = before.battingRotation.nextId;
+  await page.locator('#lineupChangeBtn').click();
+  await page.getByRole('button', { name: 'Ajouter un joueur' }).click();
+  await page.getByRole('button', { name: /Début de 2e.*courante/ }).click();
+  await page.locator('#addPlayersModalNames').fill('Camille Tremblay');
+  await page.getByRole('button', { name: 'Continuer' }).click();
+  const added = (await storedMatch(page)).players.find(player => player.name === 'Camille Tremblay');
+
+  await page.locator('#advanceHalfBtn').click();
+  const after = await storedMatch(page);
+  const secondInning = after.battingOrders['1:debut'];
+  expect(secondInning[0]).toBe(added.id);
+  expect(secondInning[1]).toBe(expectedSecond);
+  expect(new Set(secondInning).size).toBe(6);
+
+  await page.locator('#advanceHalfBtn').click();
+  await page.locator('#advanceHalfBtn').click();
+  const thirdInning = (await storedMatch(page)).battingOrders['2:debut'];
+  expect(thirdInning).toEqual([before.battingOrders['0:debut'][0], added.id, ...before.battingOrders['0:debut'].slice(1, 5)]);
+});
+
+test('saute le prochain frappeur retiré lors du passage de sept à six joueurs', async ({ page }) => {
+  await createMatchWithPlayerCount(page, 7);
+  await startPreparedMatch(page);
+  await page.locator('#advanceHalfBtn').click();
+  await page.locator('#advanceHalfBtn').click();
+
+  const before = await storedMatch(page);
+  const removedId = before.battingRotation.nextId;
+  const removed = before.players.find(player => player.id === removedId);
+  const activeOrder = before.order.filter(id => before.players.find(player => player.id === id)?.on);
+  const expectedFirst = activeOrder[(activeOrder.indexOf(removedId) + 1) % activeOrder.length];
+  await page.locator('#lineupChangeBtn').click();
+  await page.getByRole('button', { name: 'Retirer un joueur' }).click();
+  await page.getByRole('button', { name: /Début de 2e.*courante/ }).click();
+  await page.getByRole('button', { name: new RegExp(removed.name) }).click();
+  await page.getByRole('button', { name: 'Confirmer' }).click();
+  await page.locator('#advanceHalfBtn').click();
+
+  const after = await storedMatch(page);
+  expect(after.battingOrders['1:debut'][0]).toBe(expectedFirst);
+  expect(after.battingOrders['1:debut']).not.toContain(removedId);
 });
 
 test('ajoute un joueur en match commencé sans inventer ses positions futures', async ({ page }) => {

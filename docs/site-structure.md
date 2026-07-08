@@ -343,6 +343,8 @@ Découpage potentiel:
 - Au démarrage de la progression du match, l'application bloque si le nombre de joueurs actifs n'est pas entre 6 et 12. Si le nombre de joueurs est valide mais que des positions défensives manquent ou que des règles ne sont pas respectées, l'entraîneur reçoit un avertissement et peut continuer après confirmation.
 - Cliquer sur l'en-tête `Ordre` devrait permettre de désélectionner la sélection courante du tableau principal.
 - Quand `Frappe fixe` est désactivé, le tableau et les exports ne doivent pas afficher de rang de frappe `(#)` ni de frappeurs par manche.
+- L'étape `Match` affiche sous `Frappe fixe` le toggle `Faire varier le premier frappeur`. Il est activé par défaut, désactivé visuellement si la frappe fixe ne l'est pas et verrouillé dès le début du match.
+- Les changements de joueurs dans `Jouer` mettent à jour seulement les manches offensives futures: les ajouts ont priorité à la prochaine manche et les retraits sont sautés dans la rotation continue.
 - Les cartes d'équité utilisent les mêmes libellés dans les deux modes: `Temps de jeu`, `Variété des positions` et `Indice global`; `Présences au bâton` est ajouté seulement quand `Frappe fixe` est activé.
 - `Temps de jeu` inclut les présences au bâton seulement quand `Frappe fixe` est activé; sinon il reflète la défensive seulement.
 - Quand `Frappe fixe` est désactivé, les colonnes `AB` et `Total` ne sont pas affichées dans les statistiques.

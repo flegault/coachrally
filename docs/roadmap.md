@@ -7,6 +7,7 @@
 - Livré: les exports affichent la marque CoachRally; les formats Programme et Banc contiennent un code QR local qui privilégie le lien permanent de l'équipe, puis le match public ou `coachrally.app`, et le format Texte contient la même destination avec une signature compacte.
 - Livré: le Programme adapte automatiquement la taille des noms longs sans ajouter de lignes ni augmenter la hauteur de l'export.
 - Livré: l'export Banc attribue une icône d'encouragement aux enfants qui ne frappent pas pendant une manche en mode frappe fixe.
+- Livré: la frappe fixe peut faire varier le premier frappeur à exactement 6 joueurs et conserve une rotation continue lors des ajouts ou retraits en cours de match.
 
 - Compléter la gestion multi-match restante: actions avancées de reprise/recommencement à partir d'un match archivé.
 - Améliorer les exports et partages: PDF parents responsive.
