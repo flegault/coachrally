@@ -1,5 +1,6 @@
 firebase-config.js
 dev-notes.md
+dist/
 node_modules/
 playwright-report/
 test-results/

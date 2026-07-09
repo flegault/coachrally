@@ -19,6 +19,7 @@ Ce dépôt contient une application SPA statique pour préparer un alignement de
 - `styles.css` contient les styles.
 - `app.js` contient la logique applicative principale.
 - `rules.js` contient les validations pures des règles obligatoires.
+- Le build GitHub Pages `scripts/build-pages.js` copie explicitement les fichiers publiés dans `dist`. Tout nouveau fichier statique chargé par `index.html` ou par un module existant doit être ajouté à cette liste de déploiement dans le même changement.
 - L'état est sauvegardé dans `localStorage` avec la clé `rallye_cap_qc_v5`.
 - Tant que l'application n'est pas en production, ne pas supporter les vieux modèles de données. Aucune logique de code ne doit exister seulement pour migrer, lire ou réparer une ancienne version de stockage local ou cloud.
 - Les vues principales sont: `Accueil`, `Matchs`, `Match`, `Joueurs`, `Alignement`, `Jouer` et les routes publiques `Spectateurs`, `Banc` et `Fans`.
@@ -36,6 +37,7 @@ Ce dépôt contient une application SPA statique pour préparer un alignement de
 ## Risques connus
 
 - Les sorties PowerShell peuvent afficher du mojibake même quand les fichiers sont bien encodés. Vérifier les fichiers en UTF-8 avant de corriger des accents.
+- Un nouveau fichier JavaScript, CSS, image, vendor ou autre asset peut fonctionner localement mais manquer en production si `scripts/build-pages.js` ne le copie pas dans `dist`. Avant de terminer un changement qui ajoute un fichier chargé par l'app, vérifier le build de déploiement et mentionner explicitement cette vérification dans le compte rendu.
 - La suite automatisée comprend des tests Node et des parcours Playwright sur Chromium bureau et mobile. Les anciennes pages HTML restent utiles pour le diagnostic manuel.
 - Les fonctionnalités presse-papiers, fenêtre d'impression et téléchargement dépendent du navigateur.
 
