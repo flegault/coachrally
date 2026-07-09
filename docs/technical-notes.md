@@ -12,7 +12,7 @@ L'état applicatif est sauvegardé dans `localStorage` avec la clé `rallye_cap_
 
 Firebase est une couche optionnelle au-dessus du stockage local. L'application doit continuer de fonctionner hors ligne et sans configuration Firebase. Pour activer la synchronisation, créer un fichier `firebase-config.js` basé sur `firebase-config.example.js`, puis configurer Firebase Authentication et Firestore dans le projet Firebase.
 
-En production GitHub Pages, `firebase-config.js` est généré par le workflow `.github/workflows/pages.yml` à partir des secrets GitHub Actions. Le fichier local `firebase-config.js` reste ignoré par Git. Le workflow copie seulement les fichiers statiques nécessaires dans `dist`, écrit la configuration Firebase générée, puis publie l'artifact avec GitHub Pages.
+En production GitHub Pages, `firebase-config.js` est généré par `scripts/build-pages.js` à partir des secrets GitHub Actions. Le fichier local `firebase-config.js` reste ignoré par Git. Le workflow `.github/workflows/pages.yml` appelle ce script, qui copie seulement les fichiers statiques nécessaires dans `dist`, écrit la configuration Firebase générée, puis publie l'artifact avec GitHub Pages. `tests/deploy-artifact.test.js` vérifie que les assets chargés par `index.html` sont inclus dans cette source de vérité afin d'éviter un artifact incomplet.
 
 La première passe utilise:
 

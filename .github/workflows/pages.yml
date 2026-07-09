@@ -34,30 +34,13 @@ jobs:
           ref: ${{ github.event_name == 'workflow_dispatch' && inputs.ref || github.ref_name }}
 
       - name: Prepare static site
-        shell: bash
         env:
           FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
           FIREBASE_AUTH_DOMAIN: ${{ secrets.FIREBASE_AUTH_DOMAIN }}
           FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
           FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }}
           FIREBASE_APPCHECK_SITE_KEY: ${{ secrets.FIREBASE_APPCHECK_SITE_KEY }}
-        run: |
-          set -euo pipefail
-          mkdir -p dist
-          cp index.html app.js lineup-engine.js batting-order.js bench-view.js team-sync.js rules.js firebase-sync.js styles.css favicon.ico CNAME dist/
-          mkdir -p dist/vendor
-          cp vendor/qrcode.js dist/vendor/
-          node -e '
-            const fs = require("fs");
-            const config = {
-              apiKey: process.env.FIREBASE_API_KEY || "",
-              authDomain: process.env.FIREBASE_AUTH_DOMAIN || "",
-              projectId: process.env.FIREBASE_PROJECT_ID || "",
-              appId: process.env.FIREBASE_APP_ID || "",
-              appCheckSiteKey: process.env.FIREBASE_APPCHECK_SITE_KEY || ""
-            };
-            fs.writeFileSync("dist/firebase-config.js", `export default ${JSON.stringify(config, null, 2)};\n`);
-          '
+        run: node scripts/build-pages.js
 
       - name: Configure Pages
         uses: actions/configure-pages@v5
