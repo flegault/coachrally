@@ -206,7 +206,7 @@ CoachRally
 ## Frictions connues
 
 - L'écran `Alignement` contient beaucoup de sections et peut paraître dense.
-- La fin de match offre une sortie de base avec archive complète en lecture seule, mais les actions avancées de reprise/recommencement restent à simplifier.
+- La fin de match offre une sortie avec archive complète en lecture seule. Une archive ne propose pas de reprise ou de recommencement; le prochain match est créé depuis l’équipe conservée.
 - La vue publique pourrait mieux anticiper la prochaine action utile:
   - en attaque: prochains lanceurs à préparer si applicable;
   - en défense: deux premiers frappeurs de la prochaine présence offensive si applicable.
