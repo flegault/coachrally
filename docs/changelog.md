@@ -10,6 +10,7 @@ Ce document regroupe les livraisons fonctionnelles de CoachRally. Il ne remplace
 - Accueil contextuel pour créer ou sélectionner une équipe, préparer un match et reprendre le match courant.
 - Gestion locale multi-équipe et multi-match avec un bassin permanent de joueurs par équipe.
 - Vue `Matchs` unique, triable, pour les matchs en préparation, en cours, terminés et archivés.
+- Compteur de matchs de l'accueil mis à jour après le chargement cloud; un match cloud unique non terminé peut être repris directement depuis l'accueil sans import silencieux.
 - Archivage d'un match terminé en lecture seule, avec conservation de l'équipe et des joueurs pour le prochain match.
 - Vue complète et vue simple de `Jouer`; la progression avance une demi-manche à la fois et l'historique demeure verrouillé.
 - Changements de joueurs en cours de match appliqués seulement aux demi-manches futures.
@@ -22,6 +23,8 @@ Ce document regroupe les livraisons fonctionnelles de CoachRally. Il ne remplace
 - Validations de départ pour 6 à 12 joueurs actifs, positions et règles obligatoires; les autres problèmes demandent confirmation.
 - Frappe fixe avec rotation continue et option de faire varier le premier frappeur lorsque six joueurs sont actifs.
 - Numéros de chandail optionnels propagés vers l'alignement, les exports et les projections publiques.
+- Ajout d'un joueur au bassin propagé comme absent dans les matchs non commencés; son nom et son numéro y restent synchronisés jusqu'au début du match.
+- Retour d'un joueur d'`Absent` à `Présent` conservant l'ordre et déclenchant une défensive complète à l'entrée dans `Alignement`.
 
 ### Partage, cloud et vues publiques
 
@@ -46,6 +49,7 @@ Ce document regroupe les livraisons fonctionnelles de CoachRally. Il ne remplace
 - Interface de présence des joueurs simplifiée: liste unique, présents visibles et absents grisés.
 - Tests Node pour les règles, le moteur, l'ordre de frappe, la vue Banc et la synchronisation d'équipe.
 - Parcours Playwright Chromium bureau et mobile pour les flux critiques, les exports, les changements de joueurs, les archives et les projections publiques.
+- Parcours Playwright à deux navigateurs simulés pour les modifications bidirectionnelles du match, les présences, l'ordre au bâton et les positions défensives.
 - Build GitHub Pages contrôlé afin de publier explicitement chaque asset statique requis.
 
 ## Décisions consignées

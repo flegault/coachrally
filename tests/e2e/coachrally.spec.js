@@ -100,6 +100,47 @@ test('crée réellement une équipe et ajoute ses joueurs', async ({ page }) => 
   await expect(page.locator('[data-team-rename]')).toHaveCount(6);
 });
 
+test('synchronise un nouveau joueur absent avec le match puis l’intègre à l’alignement', async ({ page }) => {
+  await createExampleMatch(page);
+  await page.goto('/#accueil');
+  await page.getByRole('button', { name: 'Ajouter des joueurs' }).click();
+  await page.locator('#addPlayersModalNames').fill('#42 Raphaël Test');
+  await page.getByRole('button', { name: 'Continuer' }).click();
+
+  const afterAdd = await storedState(page);
+  const rosterPlayer = afterAdd.teams.find(team => team.id === afterAdd.activeTeamId).roster.find(player => player.name === 'Raphaël Test');
+  let match = afterAdd.matches.find(item => item.id === afterAdd.activeMatchId);
+  let matchPlayer = match.players.find(player => player.id === rosterPlayer.id);
+  expect(matchPlayer).toMatchObject({ name: 'Raphaël Test', number: '42', on: false });
+  expect(match.order.at(-1)).toBe(rosterPlayer.id);
+  expect(match.schedule.every(inning => !inning.pos[rosterPlayer.id])).toBe(true);
+
+  await page.locator(`[data-team-rename="${rosterPlayer.id}"]`).fill('Raphaël Tremblay');
+  await page.locator(`[data-team-rename="${rosterPlayer.id}"]`).press('Tab');
+  await page.locator(`[data-team-number="${rosterPlayer.id}"]`).fill('27');
+  await page.locator(`[data-team-number="${rosterPlayer.id}"]`).press('Tab');
+  match = await storedMatch(page);
+  matchPlayer = match.players.find(player => player.id === rosterPlayer.id);
+  expect(matchPlayer).toMatchObject({ name: 'Raphaël Tremblay', number: '27', on: false });
+
+  await page.goto('/#joueurs');
+  const playerToggle = page.locator(`[data-toggle="${rosterPlayer.id}"]`);
+  await expect(playerToggle).toHaveAttribute('aria-pressed', 'false');
+  await playerToggle.click();
+  await expect(playerToggle).toHaveAttribute('aria-pressed', 'true');
+  await page.locator('#toAlign').click();
+
+  match = await storedMatch(page);
+  matchPlayer = match.players.find(player => player.id === rosterPlayer.id);
+  expect(matchPlayer.on).toBe(true);
+  expect(match.order).toContain(rosterPlayer.id);
+  expect(match.schedule).toHaveLength(match.innings);
+  expect(match.schedule.every(inning => Object.keys(inning.pos).length === 6)).toBe(true);
+  expect(match.schedule.some(inning => inning.pos[rosterPlayer.id])).toBe(true);
+  await expect(page.locator(`[data-row="${rosterPlayer.id}"]`)).toContainText('Raphaël Tremblay');
+  await expect(page.locator(`[data-row="${rosterPlayer.id}"]`)).toContainText('#27');
+});
+
 test('prépare, démarre et fait progresser un match', async ({ page }) => {
   await createExampleMatch(page);
   await page.goto('/#match');
