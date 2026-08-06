@@ -207,6 +207,7 @@ Améliorations UX à prévoir:
 - Livré: la boîte d'équipe permet d'éditer le nom directement dans son titre, met `Ajouter des joueurs` en action primaire et ne contient plus de bouton `Préparer un match`.
 - Livré: le compteur de joueurs de la boîte d'équipe est placé à droite juste au-dessus de la liste.
 - Livré: quand un match courant non archivé existe, l'accueil affiche quatre cartes workflow cliquables: `Match`, `Joueurs`, `Alignement` et `Jouer`.
+- Livré: après récupération des données en ligne, le compteur `Matchs` de l'accueil combine les copies locales et cloud. Un match cloud unique sans copie locale active est proposé comme match à reprendre; plusieurs matchs renvoient vers `Matchs`.
 
 ## Équipe et joueurs
 
@@ -218,6 +219,7 @@ Améliorations UX à prévoir:
 - Livré: l'action de suppression d'un joueur dans `Équipe` utilise une icône `×` plutôt qu'une poubelle.
 - Livré: `Équipe` offre une action contextuelle pour préparer un match ou modifier le match courant, et `Mes matchs` offre `Créer un match` quand aucun match non archivé n'est actif.
 - Livré: l'étape `Joueurs` permet d'ajouter rapidement un joueur à l'équipe et au match courant avant le début, sans quitter le workflow.
+- Livré: l'ajout d'un joueur dans `Équipe` le propage comme absent dans tous les matchs non commencés; les changements de nom et de numéro y sont aussi synchronisés. Le retour `Absent` vers `Présent` conserve l'ordre et régénère une défensive complète à l'entrée dans `Alignement`.
 - Livré: l'action `Créer une équipe exemple` est placée sous la liste des joueurs et son avertissement précise que l'équipe, les matchs et les archives locales sont remplacés.
 - Livré: `Joueurs` utilise une liste unique; les présents sont verts, les absents gris, sans pastille textuelle.
 - Livré: quand plus de 12 joueurs existent dans le bassin ou sont collés dans la liste, les joueurs excédentaires restent visibles comme absents au lieu d'être perdus.
@@ -444,7 +446,7 @@ Questions fermées:
 
 ## Bugs et dettes connues
 
-- La couverture CLI comprend maintenant les modules purs existants, les invariants de génération, les cas limites principaux de changements de joueurs, la fin de match, les contrats visibles des exports et le rendu spectateur avant/après `Prêt à jouer`. Firebase réel reste hors de la suite automatisée; le module réseau est remplacé par un double contrôlé.
+- La couverture CLI comprend maintenant les modules purs existants, les invariants de génération, les cas limites principaux de changements de joueurs, la fin de match, les contrats visibles des exports et le rendu spectateur avant/après `Prêt à jouer`. Un scénario Playwright à deux navigateurs simulés vérifie aussi la synchronisation privée bidirectionnelle des informations du match, des présences, de l'ordre au bâton et des positions. Firebase réel reste hors de la suite automatisée; le module réseau est remplacé par un double contrôlé.
 - Les exports peuvent diverger de l'affichage principal parce qu'ils reconstruisent leur propre HTML.
 - Livré: le champ de mot de passe de `Spectateurs en direct` utilise maintenant un champ texte avec `autocomplete="off"` et des noms d'inputs dédiés afin de réduire les propositions de sauvegarde du gestionnaire de mots de passe Chrome.
 - À surveiller: Chrome peut encore proposer de sauvegarder le code si le navigateur détecte malgré tout un flux d'authentification; dans ce cas, il faudra remplacer le champ par un contrôle encore plus personnalisé.

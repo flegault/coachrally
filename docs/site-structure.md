@@ -138,9 +138,9 @@ Le workflow cible suit la réalité d'un match et évite de devoir revenir dans 
 📅 Match -> 👨‍👩‍👦‍👦 Joueurs -> 📋 Alignement
 ```
 
-`Matchs` et `Spectateur` sont des pages non numérotées hors menu global. `Matchs` s'ouvre depuis l'accueil. La route interne `Spectateur` n'a plus d'accès visible en attendant sa refonte. `Partager` est une action non numérotée liée au match courant, affichée avec l'icône de lien: elle ouvre une modale qui sépare `Lien Match`, `Gérer en ligne` et `Exports`. Créer l'équipe ou modifier le bassin permanent ne crée pas de match automatiquement; le match est créé par une action explicite depuis l'accueil.
+`Matchs` et `Spectateur` sont des pages non numérotées hors menu global. `Matchs` s'ouvre depuis l'accueil. Son compteur combine les matchs locaux et cloud dès la fin du chargement en ligne. Quand un seul match cloud non terminé existe sans copie locale active, l'accueil propose de le reprendre et l'importe au clic; plusieurs reprises possibles renvoient vers `Matchs`. La route interne `Spectateur` n'a plus d'accès visible en attendant sa refonte. `Partager` est une action non numérotée liée au match courant, affichée avec l'icône de lien: elle ouvre une modale qui sépare `Lien Match`, `Gérer en ligne` et `Exports`. Créer l'équipe ou modifier le bassin permanent ne crée pas de match automatiquement; le match est créé par une action explicite depuis l'accueil.
 
-La gestion durable de notre équipe et de son bassin de joueurs est séparée du workflow de match sans devenir une étape numérotée. Elle vit dans `Accueil` et sert à définir le nom de notre équipe ainsi que les joueurs disponibles pour les matchs futurs. Le workflow `Joueurs` sert seulement à indiquer qui est présent ou absent pour le match courant.
+La gestion durable de notre équipe et de son bassin de joueurs est séparée du workflow de match sans devenir une étape numérotée. Elle vit dans `Accueil` et sert à définir le nom de notre équipe ainsi que les joueurs disponibles pour les matchs futurs. Un joueur ajouté apparaît aussi comme absent dans les matchs non commencés de l'équipe; son nom et son numéro y restent synchronisés jusqu'au début du match. Le workflow `Joueurs` sert seulement à indiquer qui est présent ou absent pour le match courant.
 
 Sitemap cible:
 
@@ -155,7 +155,8 @@ CoachRally
 |   +-- Équipe courante hors workflow
 |   |   +-- Nom de notre équipe éditable dans le titre de la boîte d'équipe
 |   |   +-- Joueurs du bassin permanent
-|   |   +-- Ajouter / renommer / supprimer un joueur pour les matchs futurs
+|   |   +-- Ajouter / renommer / supprimer un joueur du bassin permanent
+|   |   +-- Synchroniser ajout, nom et numéro vers les matchs non commencés
 |   +-- Accès à Matchs
 |   +-- Champ de numéro de joueur à prévoir pour certains exports
 +-- Match
@@ -334,6 +335,7 @@ Découpage potentiel:
 - L'action `Remplacer` ne fait plus partie de l'étape `Joueurs` avant match. Le remplacement reste une action de changement en cours de match dans `Alignement`, où l'historique déjà joué doit être conservé.
 - Dans l'étape `Joueurs`, cliquer une carte joueur bascule sa disponibilité `Présent` / `Absent` pour le match courant.
 - L'ajout, le renommage et la suppression des joueurs se font dans `Accueil`, hors workflow.
+- Un joueur ajouté depuis `Accueil` apparaît comme absent dans les matchs non commencés de l'équipe. Son nom et son numéro y sont synchronisés; les matchs commencés, terminés et archivés restent figés.
 - Dans `Accueil`, le numéro de chandail optionnel devrait être éditable seulement avant match, comme les autres informations du bassin permanent.
 - Dans `Joueurs`, les cartes doivent garder une taille stable entre présents et absents. Les sections vides n'ont pas besoin d'une carte `Aucun`.
 - Le menu du haut est un menu global unique. Les étapes principales restent dans le contenu, pas dans le header.
