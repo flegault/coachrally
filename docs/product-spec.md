@@ -270,6 +270,7 @@ Les corrections automatiques encore applicables sont aussi présentées dans une
 
 - Les archives vivent dans `Matchs`; il n'y a plus de page `Archives` séparée dans le modèle courant.
 - Chaque archive est en lecture seule et peut être consultée, refermée ou supprimée manuellement avec confirmation. Les détails ne devraient pas être ouverts par défaut.
+- Une archive ne peut pas être reprise, recommencée ou rejouée. Pour poursuivre avec les mêmes joueurs, l’entraîneur crée un nouveau match depuis l’équipe.
 - Les archives complètes conservent les métadonnées du match, les joueurs figés, l'ordre, la frappe fixe, les manches, les positions, les snapshots de frappe et les demi-manches complétées.
 - Les exports `Programme`, `Banc` et `Texte` peuvent être régénérés depuis une archive complète, mais les fichiers ou rendus d'export ne sont pas stockés dans l'archive.
 - Les exports portent une signature `CoachRally • coachrally.app`. `Programme` et `Banc` incluent un code QR généré localement. Le lien permanent de l'équipe est prioritaire afin que le document reste utile d'un match à l'autre; sans lien d'équipe, le QR mène au match public, puis à `https://coachrally.app/` si aucun partage n'existe. L'export `Texte` ajoute la même destination sous forme d'URL, sans code QR.
