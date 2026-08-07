@@ -129,6 +129,7 @@ test('synchronise un nouveau joueur absent avec le match puis l’intègre à l�
   await playerToggle.click();
   await expect(playerToggle).toHaveAttribute('aria-pressed', 'true');
   await page.locator('#toAlign').click();
+  await expect(page.getByRole('heading', { name: '3. Alignement' })).toBeVisible();
 
   match = await storedMatch(page);
   matchPlayer = match.players.find(player => player.id === rosterPlayer.id);
